@@ -2,6 +2,109 @@
 
 ## Index of Contents
 
+### Object.create
+
+- 以 obj 作為 template 生成新的 function
+
+```
+function create(obj) {
+  function F() {}
+  F.prototype = obj
+  return new F()
+}
+```
+
+> Ref. [手写 Object.create](https://juejin.cn/post/6946136940164939813#heading-2)
+
+### Instanceof
+
+- Test whether the prototype of a constructor exist in the prototype chain of a object.
+
+```
+function myInstanceOf(instance, constructor){
+  let constructorPrototype = constructor.prototype
+  // let proto = instance.__proto__
+  let proto = Object.getPrototypeOf(instance)
+
+
+  while (true){
+    if (!proto) return false
+    if (proto === constructorPrototype) return true
+
+    proto = Object.getPrototypeOf(proto)
+  }
+
+}
+```
+
+> Ref. [手写 Object.create](https://juejin.cn/post/6946136940164939813#heading-2)
+
+- 左邊的一直往.`__proto__` 往上找，看有沒有右邊
+
+```
+function Foo() {
+}
+
+Object instanceof Object // true
+Function instanceof Function // true
+Function instanceof Object // true
+Foo instanceof Foo // false
+Foo instanceof Object // true
+Foo instanceof Function // true
+```
+
+```
+leftValue = Object.__proto__ = Function.prototype;
+rightValue = Object.prototype;
+// 第一次判断
+leftValue != rightValue
+leftValue = Function.prototype.__proto__ = Object.prototype
+// 第二次判断
+leftValue === rightValue
+// 返回 true
+```
+
+```
+leftValue = Foo, rightValue = Foo
+leftValue = Foo.__proto = Function.prototype
+rightValue = Foo.prototype
+// 第一次判断
+leftValue != rightValue
+leftValue = Function.prototype.__proto__ = Object.prototype
+// 第二次判断
+leftValue != rightValue
+leftValue = Object.prototype = null
+// 第三次判断
+leftValue === null
+// 返回 false
+```
+
+> Ref.[浅谈 instanceof 和 typeof 的实现原理](https://juejin.cn/post/6844903613584654344)
+
+### New
+
+- create a empty object and set new object's `__proto__` to fn.prototype
+- bind `this` of the fn to obj
+- return ret if
+
+```
+function _new(fn, ...arg) {
+    const obj = Object.create(fn.prototype);
+    const ret = fn.apply(obj, arg);
+    return ret instanceof Object ? ret : obj;
+}
+```
+
+Ref. [第 14 题：如何实现一个 new ](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/12)
+
+### Promise
+
+### Promise.then
+
+### Promise.all
+
+### Promise.race
+
 ### 随机生成一个长度为 10 的整数类型的数组，例如 [2, 10, 3, 4, 5, 11, 10, 11, 20]，将其排列成一个新数组，要求新数组形式如下，例如 [[2, 3, 4, 5], [10, 11], [20]]
 
 > > >

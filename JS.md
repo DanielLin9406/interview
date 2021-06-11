@@ -5,9 +5,12 @@
 - Data type
 - Prototype
 - Scope/Context/Closure
-- this/call/apply/bind
+- OO
+  - this/call/apply/bind
+  - new
+  - Inheritance
+  - Object
 - Async Programing
-- Object
 - GC
 - V8
 
