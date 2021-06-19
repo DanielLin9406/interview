@@ -8,12 +8,12 @@
 
 ### Hoisting
 
-```
+```js
 var b = 10;
 (function b() {
   b = 20;
-  console.log(b)
-})()
+  console.log(b);
+})();
 ```
 
 > 声明提前：一个声明在函数体内都是可见的，函数声明优先于变量声明；在非匿名自执行函数中，函数变量为只读状态无法修改
@@ -23,15 +23,15 @@ var b = 10;
 
 > > >
 
-```
+```js
 var a = 10;
 (function () {
-    console.log(a)
-    a = 5
-    console.log(window.a)
-    var a = 20;
-    console.log(a)
-})()
+  console.log(a);
+  a = 5;
+  console.log(window.a);
+  var a = 20;
+  console.log(a);
+})();
 ```
 
 Ref.[第 41 题：考察作用域的一道代码题
@@ -41,8 +41,8 @@ Ref.[第 41 题：考察作用域的一道代码题
 
 ### Radix
 
-```
-['1', '2', '3'].map(parseInt)
+```js
+["1", "2", "3"].map(parseInt);
 ```
 
 - ParseInt (string, radix)
@@ -59,7 +59,7 @@ Ref.[第 41 题：考察作用域的一道代码题
 
 > > >
 
-```
+```js
 var a = ?;
 if(a == 1 && a == 2 && a == 3){
  	conso.log(1);
@@ -74,12 +74,12 @@ Ref.: [第 38 题：下面代码中 a 在什么情况下会打印 1？](https://
 
 > > >
 
-```
+```js
 const promise = new Promise((resolve, reject) => {
   console.log(1);
   resolve(5);
   console.log(2);
-}).then(val => {
+}).then((val) => {
   console.log(val);
 });
 
@@ -89,10 +89,9 @@ promise.then(() => {
 
 console.log(4);
 
-setTimeout(function() {
+setTimeout(function () {
   console.log(6);
 });
-
 ```
 
 Ref. [第 13 题：Promise 构造函数是同步执行还是异步执行，那么 then 方法呢？](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/19)

@@ -2,6 +2,11 @@
 
 ## Index of Contents
 
+- Object
+  - Object.create
+
+## Object
+
 ### Object.create
 
 - 以 obj 作為 template 生成新的 function
@@ -238,3 +243,25 @@ test();
 Ref.[第 160 题：输出以下代码运行结果，为什么？如果希望每隔 1s 输出一个结果，应该如何改造？注意不可改动 square 方法](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/389)
 
 > > >
+
+### EventEmitter
+
+```js
+var util = require("util");
+var EventEmitter = require("events").EventEmitter;
+
+function MyEmitter() {
+  EventEmitter.call(this);
+}
+
+util.inherits(MyEmitter, EventEmitter);
+
+var em = new MyEmitter();
+em.on("hello", function (data) {
+  console.log("收到事件hello的数据:", data);
+});
+
+em.emit("hello", "EventEmitter传递消息真方便!");
+```
+
+Ref.: [node-interview-questions](https://github.com/jimuyouyou/node-interview-questions#node%E6%A0%B8%E5%BF%83%E5%86%85%E7%BD%AE%E7%B1%BB%E5%BA%93%E4%BA%8B%E4%BB%B6%E6%B5%81%E6%96%87%E4%BB%B6%E7%BD%91%E7%BB%9C%E7%AD%89)
