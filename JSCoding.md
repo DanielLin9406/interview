@@ -4,6 +4,20 @@
 
 - Object
   - Object.create
+  - instanceof
+  - new
+- Promise
+  - Promise
+  - Promise.then
+  - Promise.all
+  - Promise.race
+- this
+  - call
+  - apply
+  - bind
+- currying
+- ajax
+  - Promise 封裝
 
 ## Object
 

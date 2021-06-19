@@ -289,13 +289,93 @@ Ref.[第 21 题：有以下 3 个判断数组的方法，请分别介绍它们�
 
 ## Context
 
-## Scope
+## OO
 
-## this/call/apply/bind
+### Scope
+
+### this/call/apply/bind
 
 ### this
 
 "this" is defined by the way that how to call it.
+
+### Inheritance
+
+```js
+function Child(value) {
+  Parent.call(this);
+  this.prop = value;
+}
+
+Child.prototype = Object.create(Parent.prototype);
+Child.prototype.constructor = Child;
+Child.prototype.method = "...";
+
+//or
+// Child will own all methods of the Parent has
+Child.prototype = new Parent();
+```
+
+```js
+// Parent
+function Shape() {
+  this.x = 0;
+  this.y = 0;
+}
+Shape.prototype.move = function (x, y) {
+  this.x += x;
+  this.y += y;
+  console.info("Shape moved.");
+};
+
+// Step1 version1
+function Rectangle() {
+  Shape.call(this);
+}
+// Step1 version2
+function Rectangle() {
+  this.base = Shape;
+  this.base();
+}
+
+// Step2，子类继承父类的原型
+Rectangle.prototype = Object.create(Shape.prototype);
+Rectangle.prototype.constructor = Rectangle;
+
+var rect = new Rectangle();
+
+rect instanceof Rectangle; // true
+rect instanceof Shape; // true
+```
+
+- Miltiple Inheritance
+
+```js
+function M1() {
+  this.hello = "hello";
+}
+
+function M2() {
+  this.world = "world";
+}
+
+function S() {
+  M1.call(this);
+  M2.call(this);
+}
+
+// Inheritance M1
+S.prototype = Object.create(M1.prototype);
+// Inheritance M2 by add M2's prototype on the chain
+Object.assign(S.prototype, M2.prototype);
+S.prototype.constructor = S;
+
+var s = new S();
+s.hello; // 'hello'
+s.world; // 'world'
+```
+
+Ref.[对象的继承](https://wangdoc.com/javascript/oop/prototype.html)
 
 ## Async Programing
 
