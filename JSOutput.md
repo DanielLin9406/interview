@@ -94,6 +94,8 @@ setTimeout(function () {
 });
 ```
 
+124536
+
 Ref. [第 13 题：Promise 构造函数是同步执行还是异步执行，那么 then 方法呢？](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/19)
 
 > > >

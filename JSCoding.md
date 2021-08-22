@@ -3,20 +3,29 @@
 ## Index of Contents
 
 - Object
-  - Object.create
-  - instanceof
-  - new
+  - [Object.create](#objectcreate)
+  - [instanceof](#instanceof)
+  - [new](#new)
+- Copy
+  - Shallow Copy
+  - Deep Copy
 - Promise
   - Promise
   - Promise.then
   - Promise.all
   - Promise.race
+- Array
+  - Intersect
+  - Merge
 - this
   - call
   - apply
   - bind
-- currying
-- ajax
+- Function
+  - currying
+- Async
+- Class
+- Ajax
   - Promise 封裝
 
 ## Object
@@ -113,6 +122,164 @@ function _new(fn, ...arg) {
 
 Ref. [第 14 题：如何实现一个 new ](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/12)
 
+## Copy
+
+Before copying, need to loop through all the keys of object
+
+### Shallow Copy
+
+#### Object.assign
+
+> Object.assign(target, source_1, ···)
+> Note
+>
+> - If target and source share the same properties, the later one overlap the former one.
+> - If parameter is object, return object; otherwise, the parameter will be turned into an object and return that.
+> - null and undefined cannot be turn into an object, so they can not be the first parameter
+
+```js
+let target = { a: 1 };
+let object2 = { b: 2 };
+let object3 = { c: 3 };
+Object.assign(target, object2, object3);
+console.log(target); // {a: 1, b: 2, c: 3}
+```
+
+Ref.[高频前端面试题汇总之手写代码篇](https://juejin.cn/post/6946136940164939813#heading-24)
+
+#### Spread Operator
+
+```js
+let obj1 = { a: 1, b: { c: 1 } };
+let obj2 = { ...obj1 };
+obj1.a = 2;
+console.log(obj1); //{a:2,b:{c:1}}
+console.log(obj2); //{a:1,b:{c:1}}
+
+obj1.b.c = 2;
+console.log(obj1); //{a:2,b:{c:2}}
+console.log(obj2); //{a:1,b:{c:2}}
+```
+
+Ref.[高频前端面试题汇总之手写代码篇](https://juejin.cn/post/6946136940164939813#heading-24)
+
+#### Array.slice and Array.concat
+
+- slice(): won't modify the original one
+
+```js
+let arr = [1, 2, 3, 4];
+arr.slice() === arr; // false
+```
+
+- concat(): won't modify the original one
+
+```js
+let arr = [1, 2, 3, 4];
+arr.concat() === arr; // false
+```
+
+Ref.[高频前端面试题汇总之手写代码篇](https://juejin.cn/post/6946136940164939813#heading-24)
+
+#### Shallow Copy From Scratch
+
+- ES5: for-in + hasOwnProperty => get own enumerable properties
+
+```js
+function shallowCopy(object) {
+  // 只拷贝对象
+  if (!object || typeof object !== "object") return;
+
+  // 根据 object 的类型判断是新建一个数组还是对象
+  let newObject = Array.isArray(object) ? [] : {};
+
+  // 遍历 object，并且判断是 object 的属性才拷贝
+  for (let key in object) {
+    if (object.hasOwnProperty(key)) {
+      newObject[key] = object[key];
+    }
+  }
+
+  return newObject;
+}
+```
+
+Ref.[高频前端面试题汇总之手写代码篇](https://juejin.cn/post/6946136940164939813#heading-24)
+
+- ES5: getOwnPropertyNames + getOwnPropertyDescriptor => get own enumerable or innumerable properties
+
+```js
+function copyObject(orig) {
+  var copy = Object.create(Object.getPrototypeOf(orig));
+  copyOwnPropertiesFrom(copy, orig);
+  return copy;
+}
+
+function copyOwnPropertiesFrom(target, source) {
+  Object.getOwnPropertyNames(source).forEach(function (propKey) {
+    var desc = Object.getOwnPropertyDescriptor(source, propKey);
+    Object.defineProperty(target, propKey, desc);
+  });
+  return target;
+}
+```
+
+Ref.[Object 对象的相关方法](https://wangdoc.com/javascript/oop/object.html#objectprototypeisprototypeof)
+
+- ES6: getOwnPropertyDescriptors
+
+```js
+function copyObject(orig) {
+  return Object.create(
+    Object.getPrototypeOf(orig),
+    Object.getOwnPropertyDescriptors(orig)
+  );
+}
+```
+
+### Deep Copy
+
+#### JSON.stringify()
+
+> - Note: function, undefined, symbol are all gone after JSON.stringify()
+
+```js
+let obj1 = {
+  a: 0,
+  b: {
+    c: 0,
+  },
+};
+
+let obj2 = JSON.parse(JSON.stringify(obj1));
+```
+
+#### lodash cloneDeep
+
+#### Deep Copy From Scratch
+
+```js
+function deepCopy(object) {
+  if (!object || typeof object !== "object") return;
+  let newObject = Array.isArray(object) ? [] : {};
+  for (let key in object) {
+    if (object.hasOwnProperty(key)) {
+      newObject[key] =
+        typeof object[key] === "object"
+          ? deepCopy(object[key])
+          : newObject[key];
+    }
+  }
+  return newObject;
+}
+```
+
+Ref.[高频前端面试题汇总之手写代码篇](https://juejin.cn/post/6946136940164939813#heading-26)
+
+---
+
+## Promise
+
 ### Promise
 
 ### Promise.then
@@ -120,6 +287,70 @@ Ref. [第 14 题：如何实现一个 new ](https://github.com/Advanced-Frontend
 ### Promise.all
 
 ### Promise.race
+
+---
+
+## Array
+
+### Array Intersect
+
+```js
+const intersect = (arr1, arr2) => {
+  const map {}
+  const res = []
+  for (let n of arr1){
+    if (map[n]){
+      map[n]++
+    } else {
+      map[n] = 1
+    }
+  }
+  for (let n of arr2){
+    if (map[n]>0){
+      res.push(n)
+      map[n]--
+    }
+  }
+  return res
+}
+```
+
+Ref.: [第 59 题：给定两个数组，写一个方法来计算它们的交集。](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/102)
+
+### Array Merge
+
+> > >
+
+- ES5
+
+```js
+var array1 = ["Vijendra", "Singh"];
+var array2 = ["Singh", "Shakya"];
+
+console.log(array1.concat(array2));
+```
+
+- ES6
+
+```js
+const array1 = ["Vijendra", "Singh"];
+const array2 = ["Singh", "Shakya"];
+const array3 = [...array1, ...array2];
+```
+
+```js
+var c = [...a, ...b.filter((o) => a.indexOf(o) !== -1)];
+```
+
+```js
+var c = [...new Set([...a, ...b])];
+```
+
+Ref.[How to merge two arrays in JavaScript and de-duplicate items](https://stackoverflow.com/questions/1584370/how-to-merge-two-arrays-in-javascript-and-de-duplicate-items)
+
+Ref.[第 30 题：请把俩个数组 [A1, A2, B1, B2, C1, C2, D1, D2] 和 [A, B, C, D]，合并为 [A1, A2, A, B1, B2, B, C1, C2, C, D1, D2, D]](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/39)
+
+> > >
 
 ### 随机生成一个长度为 10 的整数类型的数组，例如 [2, 10, 3, 4, 5, 11, 10, 11, 20]，将其排列成一个新数组，要求新数组形式如下，例如 [[2, 3, 4, 5], [10, 11], [20]]
 
@@ -161,6 +392,61 @@ Ref.: [第 67 题：随机生成一个长度为 10 的整数类型的数组，�
 
 > > >
 
+---
+
+## This
+
+### call
+
+### apply
+
+### bind
+
+---
+
+## Function
+
+### Currying
+
+```js
+
+```
+
+Ref.[高频前端面试题汇总之手写代码篇](https://juejin.cn/post/6946136940164939813#heading-12)
+
+---
+
+## Async
+
+> > >
+
+```js
+const list = [1, 2, 3];
+const square = (num) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(num * num);
+    }, 1000);
+  });
+};
+
+function test() {
+  list.forEach(async (x) => {
+    const res = await square(x);
+    console.log(res);
+  });
+}
+test();
+```
+
+Ref.[第 160 题：输出以下代码运行结果，为什么？如果希望每隔 1s 输出一个结果，应该如何改造？注意不可改动 square 方法](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/389)
+
+> > >
+
+---
+
+## Class
+
 ### 要求设计 LazyMan 类，实现以下功能
 
 > > >
@@ -197,85 +483,3 @@ LazyMan("Tony")
 Ref.: [第 56 题：要求设计 LazyMan 类，实现以下功能](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/98)
 
 > > >
-
-### Array Intersect
-
-```js
-const intersect = (arr1, arr2) => {
-  const map {}
-  const res = []
-  for (let n of arr1){
-    if (map[n]){
-      map[n]++
-    } else {
-      map[n] = 1
-    }
-  }
-  for (let n of arr2){
-    if (map[n]>0){
-      res.push(n)
-      map[n]--
-    }
-  }
-  return res
-}
-```
-
-Ref.: [第 59 题：给定两个数组，写一个方法来计算它们的交集。](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/102)
-
-### Array Merge
-
-> > >
-
-Ref.[第 30 题：请把俩个数组 [A1, A2, B1, B2, C1, C2, D1, D2] 和 [A, B, C, D]，合并为 [A1, A2, A, B1, B2, B, C1, C2, C, D1, D2, D]](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/39)
-
-> > >
-
-### Async
-
-> > >
-
-```js
-const list = [1, 2, 3];
-const square = (num) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(num * num);
-    }, 1000);
-  });
-};
-
-function test() {
-  list.forEach(async (x) => {
-    const res = await square(x);
-    console.log(res);
-  });
-}
-test();
-```
-
-Ref.[第 160 题：输出以下代码运行结果，为什么？如果希望每隔 1s 输出一个结果，应该如何改造？注意不可改动 square 方法](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/389)
-
-> > >
-
-### EventEmitter
-
-```js
-var util = require("util");
-var EventEmitter = require("events").EventEmitter;
-
-function MyEmitter() {
-  EventEmitter.call(this);
-}
-
-util.inherits(MyEmitter, EventEmitter);
-
-var em = new MyEmitter();
-em.on("hello", function (data) {
-  console.log("收到事件hello的数据:", data);
-});
-
-em.emit("hello", "EventEmitter传递消息真方便!");
-```
-
-Ref.: [node-interview-questions](https://github.com/jimuyouyou/node-interview-questions#node%E6%A0%B8%E5%BF%83%E5%86%85%E7%BD%AE%E7%B1%BB%E5%BA%93%E4%BA%8B%E4%BB%B6%E6%B5%81%E6%96%87%E4%BB%B6%E7%BD%91%E7%BB%9C%E7%AD%89)

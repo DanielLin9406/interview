@@ -3,14 +3,16 @@
 ## Index of Topic
 
 - Loops
+- Reg
 - Data type
 - Prototype
 - Scope/Context/Closure
 - OO
   - this/call/apply/bind
-  - new
-  - Inheritance
+  - [new](#new)
+  - [Inheritance](#inheritance)
   - Object
+    - [Create Object](#create-object)
 - Async Programing
 - GC
 - V8
@@ -237,6 +239,22 @@ list.some(function (elem) {
 
 Ref.[How to break when looping an array in Javascript](https://medium.com/@benjamincherion/how-to-break-an-array-in-javascript-6d3a55bd06f6)
 
+---
+
+## Reg
+
+### Character classes
+
+### Assertions
+
+### Groups and ranges
+
+### Quantifiers
+
+### Unicode property escapes
+
+---
+
 ## Data type
 
 ### What is the difference between Double Equals vs Triple Equals?
@@ -298,6 +316,34 @@ Ref.[第 21 题：有以下 3 个判断数组的方法，请分别介绍它们�
 ### this
 
 "this" is defined by the way that how to call it.
+
+> - This in arrow function
+>   箭头函数并没有属于⾃⼰的 this，它所谓的 this 是捕获其所在上下⽂的 this 值，作为⾃⼰的 this 值，并且由于没有属于⾃⼰的 this，所以是不会被 new 调⽤的，这个所谓的 this 也不会被改变。
+
+```js
+// ES6
+const obj = {
+  getArrow() {
+    return () => {
+      console.log(this === obj);
+    };
+  },
+};
+
+// ES5，由 Babel 转译
+var obj = {
+  getArrow: function getArrow() {
+    var _this = this;
+    return function () {
+      console.log(_this === obj);
+    };
+  },
+};
+```
+
+Ref.[](https://juejin.cn/post/6940945178899251230#heading-28)
+
+### New
 
 ### Inheritance
 
@@ -377,10 +423,42 @@ s.world; // 'world'
 
 Ref.[对象的继承](https://wangdoc.com/javascript/oop/prototype.html)
 
-## Async Programing
+### Object
 
-## Object
+#### Create Object
+
+- Object Literal
+
+- Keyword New
+
+- Objects are Mutable
+
+- Object.create()
+
+## Async Programing
 
 ## GC
 
 ## V8
+
+## EventEmitter
+
+```js
+var util = require("util");
+var EventEmitter = require("events").EventEmitter;
+
+function MyEmitter() {
+  EventEmitter.call(this);
+}
+
+util.inherits(MyEmitter, EventEmitter);
+
+var em = new MyEmitter();
+em.on("hello", function (data) {
+  console.log("收到事件hello的数据:", data);
+});
+
+em.emit("hello", "EventEmitter传递消息真方便!");
+```
+
+Ref.: [node-interview-questions](https://github.com/jimuyouyou/node-interview-questions#node%E6%A0%B8%E5%BF%83%E5%86%85%E7%BD%AE%E7%B1%BB%E5%BA%93%E4%BA%8B%E4%BB%B6%E6%B5%81%E6%96%87%E4%BB%B6%E7%BD%91%E7%BB%9C%E7%AD%89)
